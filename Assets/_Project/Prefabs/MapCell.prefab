@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 0.1, z: 10}
+  m_LocalScale: {x: 100, y: 0.1, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 725969762068492881}
@@ -121,22 +121,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8ec0fa9eb0ac14499c276ddde7d8e05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentBiome: {fileID: 0}
+  groundRenderer: {fileID: 3902911314148610249}
   bottomLeftMarker: {fileID: 5009037721821104453}
   topRightMarker: {fileID: 2410843758664293162}
-  trees:
-  - {fileID: 6724020930213615476, guid: e28e86642ee8d8c4fb4340ec4d23821a, type: 3}
-  - {fileID: 6724020930213615476, guid: e28e86642ee8d8c4fb4340ec4d23821a, type: 3}
-  stones:
-  - {fileID: 5973230467322384501, guid: cfc33aaf7780bf747b2a269c0991b76f, type: 3}
-  - {fileID: 5973230467322384501, guid: cfc33aaf7780bf747b2a269c0991b76f, type: 3}
-  terrain:
-  - {fileID: 7423584866888316468, guid: 15f6ee147e42b0f4b846af90af85f25e, type: 3}
-  - {fileID: 7423584866888316468, guid: 15f6ee147e42b0f4b846af90af85f25e, type: 3}
-  worldObjectRowsAndCols: 10
-  terrainRowsAndCols: 10
-  repeatPasses: 4
-  worldObjectSphereRad: 10
-  terrainSphereRad: 5
+  decorativeElements: []
+  obstacles: []
+  terrains: []
+  stoneChanceToSpawn: 1
+  worldObjectRowsAndCols: 15
+  terrainRowsAndCols: 3
+  repeatPasses: 3
+  worldObjectSphereRad: 5
+  terrainSphereRad: 15
   worldObjectLayer:
     serializedVersion: 2
     m_Bits: 128

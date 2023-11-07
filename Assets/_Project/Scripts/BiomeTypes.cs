@@ -4,6 +4,8 @@ using UnityEngine;
 
 public enum BiomeType
 {
-    desert,
-    forest
+    western,
+    pirate,
+    adventure,
+    city
 }

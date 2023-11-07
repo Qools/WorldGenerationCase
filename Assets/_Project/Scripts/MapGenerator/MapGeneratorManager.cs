@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MapGeneratorManager : MonoBehaviour
 {
+    [SerializeField] private Biome[] biomes;
+
     public MapCell cellPrefab;
 
     public int worldSizeX, worldSizeZ;
@@ -12,12 +14,6 @@ public class MapGeneratorManager : MonoBehaviour
     void Start()
     {
         GenerateWorldCell();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void GenerateWorldCell()
@@ -31,6 +27,8 @@ public class MapGeneratorManager : MonoBehaviour
                 GameObject generatedCell = Instantiate(cellPrefab.gameObject, startPosition, Quaternion.identity);
 
                 startPosition += new Vector3(cellPrefab.transform.lossyScale.x, 0f, 0f);
+
+                generatedCell.GetComponent<MapCell>().currentBiome = biomes[Random.Range(0, biomes.Length)];
             }
 
             startPosition = new Vector3(0f, 0f, cellPrefab.transform.lossyScale.z * i);

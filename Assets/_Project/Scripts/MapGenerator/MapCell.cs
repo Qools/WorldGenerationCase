@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class MapCell : MonoBehaviour
 {
+    public Biome currentBiome;
+    [SerializeField] private Renderer groundRenderer;
+
     [SerializeField] private GameObject bottomLeftMarker;
     [SerializeField] private GameObject topRightMarker;
 
     [Header("Objects to spawn")]
-    [SerializeField] private GameObject[] trees;
-    [SerializeField] private GameObject[] stones;
-    [SerializeField] private GameObject[] terrain;
+    [SerializeField] private GameObject[] decorativeElements;
+    [SerializeField] private GameObject[] obstacles;
+    [SerializeField] private GameObject[] terrains;
 
-    private int stoneChanceToSpawn = 5;
+    [SerializeField] private int stoneChanceToSpawn = 1;
 
     //Spawning grid values / variables to control cell size
     private Vector3 currentPos;
@@ -45,9 +48,19 @@ public class MapCell : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        StartCoroutine(SpawnCellObjects());
 
-        this.GetComponentInChildren<Renderer>().material.color = Random.ColorHSV();
+        SetBiome();
+    }
+
+    private void SetBiome()
+    {
+        groundRenderer.material = currentBiome.groundMaterial;
+
+        decorativeElements = currentBiome.decorativeElements;
+        obstacles = currentBiome.obstacles;
+        terrains = currentBiome.terrains;
+
+        StartCoroutine(SpawnCellObjects());
     }
 
     private IEnumerator SpawnCellObjects()
@@ -83,14 +96,17 @@ public class MapCell : MonoBehaviour
                     {
                         currentPos = new Vector3(currentPos.x + terrainIncrementAmount, currentPos.y, currentPos.z);
 
-                        GameObject newSpawn = terrain[Random.Range(0, terrain.Length)];
+                        GameObject newSpawn = terrains[Random.Range(0, terrains.Length)];
 
                         SpawnObject(currentPos, newSpawn, terrainSphereRad, true);
 
                         yield return new WaitForSeconds(0.01f);
                     }
 
-                    currentPos = new Vector3(terrainStartPos.x, currentPos.y, currentPos.z + terrainIncrementAmount);
+                    currentPos = new Vector3(
+                        terrainStartPos.x, 
+                        currentPos.y, 
+                        currentPos.z + terrainIncrementAmount);
                 }
             }
 
@@ -108,7 +124,8 @@ public class MapCell : MonoBehaviour
 
                         if (spawnChance == 1)
                         {
-                            GameObject newSpawn = stones[Random.Range(0, stones.Length)];
+                            GameObject newSpawn = obstacles[Random.Range(0, obstacles.Length)];
+
                             SpawnObject(currentPos, newSpawn, worldObjectSphereRad, false);
 
                             yield return new WaitForSeconds(0.01f);
@@ -116,17 +133,18 @@ public class MapCell : MonoBehaviour
 
                         else
                         {
-                            GameObject newSpawn = trees[Random.Range(0, trees.Length)];
+                            GameObject newSpawn = decorativeElements[Random.Range(0, decorativeElements.Length)];
+
                             SpawnObject(currentPos, newSpawn, worldObjectSphereRad, false);
 
                             yield return new WaitForSeconds(0.01f);
                         }
-
-                        currentPos = new Vector3(
-                            worldObjectStartPos.x, 
-                            currentPos.y,
-                            currentPos.z + worldObjectIncrementAmount);
                     }
+
+                    currentPos = new Vector3(
+                          worldObjectStartPos.x,
+                          currentPos.y,
+                          currentPos.z + worldObjectIncrementAmount);
                 }
             }
         }
@@ -139,7 +157,7 @@ public class MapCell : MonoBehaviour
         Debug.LogWarning("Spawned");
     }
 
-    private void SpawnObject(Vector3 newSpawnPos, GameObject objectToSpawn, float radiusOsPhere, bool isObjectTerrain)
+    private void SpawnObject(Vector3 newSpawnPos, GameObject objectToSpawn, float radiusOfSphere, bool isObjectTerrain)
     {
         if (isObjectTerrain)
         {
@@ -147,26 +165,28 @@ public class MapCell : MonoBehaviour
                 newSpawnPos.x + Random.Range(-terrainRandomAmount, terrainRandomAmount + 1),
                 0f,
                 newSpawnPos.z + Random.Range(-terrainRandomAmount, terrainRandomAmount + 1));
-            Vector3 rayPos = new Vector3(randPos.x, 10f, randPos.z);
+            
+            Vector3 rayPos = new Vector3(randPos.x, 5f, randPos.z);
 
             if (Physics.Raycast(rayPos, Vector3.down, Mathf.Infinity, groundLayer))
             {
+                Collider[] objectsHit = Physics.OverlapSphere(rayPos, radiusOfSphere, terrainLayer);
 
-                Collider[] objectsHit = Physics.OverlapSphere(rayPos, radiusOsPhere, terrainLayer);
-
-                if (objectsHit.Length == 0)
+                if (objectsHit.Length > 0)
                 {
-                    GameObject terrainObject = Instantiate(objectToSpawn, randPos, Quaternion.identity, this.transform);
-
-                    terrainObject.transform.localScale = new Vector3(terrainObject.transform.localScale.x / this.transform.localScale.x,
-                        terrainObject.transform.localScale.y / this.transform.localScale.y,
-                        terrainObject.transform.localScale.z / this.transform.localScale.z);
-
-                    terrainObject.transform.eulerAngles = new Vector3(
-                        transform.eulerAngles.x, 
-                        Random.Range(0f, 360f), 
-                        transform.eulerAngles.z);
+                    return;
                 }
+
+                GameObject terrainObject = Instantiate(objectToSpawn, randPos, Quaternion.identity, this.transform);
+
+                terrainObject.transform.localScale = new Vector3(terrainObject.transform.localScale.x / this.transform.localScale.x,
+                    terrainObject.transform.localScale.y / this.transform.localScale.y,
+                    terrainObject.transform.localScale.z / this.transform.localScale.z);
+
+                terrainObject.transform.eulerAngles = new Vector3(
+                    transform.eulerAngles.x,
+                    Random.Range(0f, 360f),
+                    transform.eulerAngles.z);
             }
         }
 
@@ -177,7 +197,7 @@ public class MapCell : MonoBehaviour
                 newSpawnPos.y,
                 newSpawnPos.z + Random.Range(-worldObjectRandomAmount, worldObjectRandomAmount + 1));
 
-            Vector3 rayPos = new Vector3(randPos.x, 20f, randPos.z);
+            Vector3 rayPos = new Vector3(randPos.x, 5f, randPos.z);
 
             RaycastHit hit;
 
@@ -185,23 +205,25 @@ public class MapCell : MonoBehaviour
             {
                 randPos = new Vector3(randPos.x, hit.point.y, randPos.z);
                 
-                Collider[] objectsHit = Physics.OverlapSphere(rayPos, radiusOsPhere, worldObjectLayer);
+                Collider[] objectsHit = Physics.OverlapSphere(rayPos, radiusOfSphere, worldObjectLayer);
 
-                if (objectsHit.Length == 0)
+                if (objectsHit.Length > 0)
                 {
-                    GameObject worldObject = Instantiate(objectToSpawn, randPos, Quaternion.identity, this.transform);
-
-                    worldObject.transform.localScale = new Vector3(worldObject.transform.localScale.x / this.transform.localScale.x,
-                        worldObject.transform.localScale.y / this.transform.localScale.y,
-                        worldObject.transform.localScale.z / this.transform.localScale.z);
-
-                    worldObject.transform.position = new Vector3(
-                        worldObject.transform.position.x,
-                        worldObject.transform.position.y + (worldObject.GetComponent<Renderer>().bounds.extents.y * 0.7f),
-                        worldObject.transform.position.z);
-
-                    worldObject.transform.eulerAngles = new Vector3(transform.eulerAngles.x, Random.Range(0f, 360f), transform.eulerAngles.z);
+                    return;
                 }
+
+                GameObject worldObject = Instantiate(objectToSpawn, randPos, Quaternion.identity, this.transform);
+
+                worldObject.transform.position = new Vector3(
+                    worldObject.transform.position.x,
+                    worldObject.transform.position.y + (worldObject.GetComponent<Renderer>().bounds.extents.y * 0.7f),
+                    worldObject.transform.position.z);
+
+                worldObject.transform.localScale = new Vector3(worldObject.transform.localScale.x / this.transform.localScale.x,
+                    worldObject.transform.localScale.y / this.transform.localScale.y,
+                    worldObject.transform.localScale.z / this.transform.localScale.z);
+
+                worldObject.transform.eulerAngles = new Vector3(transform.eulerAngles.x, Random.Range(0f, 360f), transform.eulerAngles.z);
             }
         }
     }
