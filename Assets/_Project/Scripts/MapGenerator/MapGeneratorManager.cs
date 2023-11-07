@@ -11,7 +11,7 @@ public class MapGeneratorManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GenerateWorld();
+        GenerateWorldCell();
     }
 
     // Update is called once per frame
@@ -20,7 +20,7 @@ public class MapGeneratorManager : MonoBehaviour
         
     }
 
-    public void GenerateWorld()
+    public void GenerateWorldCell()
     {
         Vector3 startPosition = Vector3.zero;
 
@@ -30,10 +30,10 @@ public class MapGeneratorManager : MonoBehaviour
             {
                 GameObject generatedCell = Instantiate(cellPrefab.gameObject, startPosition, Quaternion.identity);
 
-                startPosition += new Vector3(cellPrefab.sizeX, 0f, 0f);
+                startPosition += new Vector3(cellPrefab.transform.lossyScale.x, 0f, 0f);
             }
 
-            startPosition = new Vector3(0f, 0f, cellPrefab.sizeZ * i);
+            startPosition = new Vector3(0f, 0f, cellPrefab.transform.lossyScale.z * i);
         }
     }
 }

@@ -339,8 +339,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cellPrefab: {fileID: 6528827970963108010, guid: 54cf8fa55b6c06c45857c5ced3580cb2, type: 3}
-  worldSizeX: 5
-  worldSizeZ: 5
+  worldSizeX: 3
+  worldSizeZ: 3
 --- !u!4 &1165767681
 Transform:
   m_ObjectHideFlags: 0
