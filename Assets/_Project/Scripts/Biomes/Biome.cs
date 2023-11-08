@@ -2,14 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "newBiome")]
-public class Biome : ScriptableObject
+namespace WorldGeneration
 {
-    public BiomeType biomeType;
+    [CreateAssetMenu(fileName = "newBiome")]
+    public class Biome : ScriptableObject
+    {
+        public BiomeType biomeType;
 
-    public Material groundMaterial;
+        public Material groundMaterial;
 
-    public GameObject[] obstacles;
-    public GameObject[] decorativeElements;
-    public GameObject[] terrains;
+        public GameObject[] obstacles;
+        public GameObject[] decorativeElements;
+        public GameObject[] terrains;
+    }
 }

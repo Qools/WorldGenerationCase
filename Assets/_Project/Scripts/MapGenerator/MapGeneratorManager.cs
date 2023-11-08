@@ -2,36 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MapGeneratorManager : MonoBehaviour
+namespace WorldGeneration
 {
-    [SerializeField] private Biome[] biomes;
-
-    public MapCell cellPrefab;
-
-    public int worldSizeX, worldSizeZ;
-
-    // Start is called before the first frame update
-    void Start()
+    public class MapGeneratorManager : MonoBehaviour
     {
-        GenerateWorldCell();
-    }
+        [SerializeField] private Biome[] biomes;
 
-    public void GenerateWorldCell()
-    {
-        Vector3 startPosition = Vector3.zero;
+        public MapCell cellPrefab;
 
-        for (int i = 1; i <= worldSizeZ; i++)
+        public int worldSizeX, worldSizeZ;
+
+        // Start is called before the first frame update
+        void Start()
         {
-            for (int k = 1; k <= worldSizeX; k++)
+            GameManager.Instance.cellToCreate = worldSizeX * worldSizeZ;
+
+            GenerateWorldCell();
+        }
+
+        public void GenerateWorldCell()
+        {
+            Vector3 startPosition = Vector3.zero;
+
+            for (int i = 1; i <= worldSizeZ; i++)
             {
-                GameObject generatedCell = Instantiate(cellPrefab.gameObject, startPosition, Quaternion.identity);
+                for (int k = 1; k <= worldSizeX; k++)
+                {
+                    GameObject generatedCell = Instantiate(cellPrefab.gameObject, startPosition, Quaternion.identity);
 
-                startPosition += new Vector3(cellPrefab.transform.lossyScale.x, 0f, 0f);
+                    startPosition += new Vector3(cellPrefab.transform.lossyScale.x, 0f, 0f);
 
-                generatedCell.GetComponent<MapCell>().currentBiome = biomes[Random.Range(0, biomes.Length)];
+                    generatedCell.GetComponent<MapCell>().currentBiome = biomes[Random.Range(0, biomes.Length)];
+                }
+
+                startPosition = new Vector3(0f, 0f, cellPrefab.transform.lossyScale.z * i);
             }
-
-            startPosition = new Vector3(0f, 0f, cellPrefab.transform.lossyScale.z * i);
         }
     }
 }

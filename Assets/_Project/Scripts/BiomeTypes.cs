@@ -2,10 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum BiomeType
+namespace WorldGeneration
 {
-    western,
-    pirate,
-    adventure,
-    city
+    public enum BiomeType
+    {
+        western,
+        pirate,
+        adventure,
+        city
+    }
 }
