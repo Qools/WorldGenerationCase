@@ -56,7 +56,7 @@ namespace WorldGeneration
         {
             GameObject _player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
 
-            EventSystem.CallPlayerSpawned(_player.transform);
+            EventSystem.OnPlayerSpawned(_player.transform);
         }
     }
 

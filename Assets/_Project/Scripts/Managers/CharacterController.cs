@@ -32,10 +32,18 @@ namespace WorldGeneration
         private void MovePlayer()
         {
             Vector3 _movement = new Vector3(move.x, 0f, move.y);
+            float _velocity = _movement.magnitude * characterSpeed;
+
+            SetAnimationSpeed(_velocity);
 
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(_movement), 0.15f);
 
             transform.Translate(_movement * characterSpeed * Time.deltaTime, Space.World);
+        }
+
+        private void SetAnimationSpeed(float _speed)
+        {
+            characterAnimator.SetFloat("Speed", _speed);
         }
     }
 
